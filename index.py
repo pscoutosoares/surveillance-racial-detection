@@ -6,6 +6,19 @@ import time
 import json
 from tqdm import tqdm
 import numpy as np
+from gfpgan import GFPGANer
+from PIL import Image
+
+
+
+def melhorar_qualidade_imagem(face_img):
+    """Melhora a qualidade da imagem usando GFPGAN."""
+    restorer = GFPGANer(model_path='weights/GFPGANv1.4.pth', upscale=4)
+    image = Image.fromarray(face_img).convert('RGB')
+    restored_img, _ = restorer.enhance(image, has_aligned=False, only_center_face=False)
+    return restored_img
+
+
 
 def convert_to_serializable(obj):
     """Converte valores não serializáveis para tipos serializáveis"""
@@ -104,6 +117,15 @@ while True:
                     
                     # Salva a face temporariamente para análise
                     temp_face_path = os.path.join(frame_dir, f"temp_face_{i:03d}.png")
+
+                    # Melhora a qualidade da face
+                    imagem_melhorada = melhorar_qualidade_imagem(face_img)
+
+                    # Salva a imagem original e a melhorada
+                    cv2.imwrite(os.path.join(frame_dir, f"original_face_{i:03d}.png"), cv2.cvtColor(face_img, cv2.COLOR_RGB2BGR))
+                    imagem_melhorada.save(os.path.join(frame_dir, f"restored_face_{i:03d}.png"))
+
+
                     cv2.imwrite(temp_face_path, cv2.cvtColor(face_img, cv2.COLOR_RGB2BGR))
                     
                     # Analisa atributos demográficos da face
