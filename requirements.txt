@@ -1,0 +1,12 @@
+numpy
+pandas
+tensorflow
+tf-keras
+deepface
+opencv-python
+opencv-contrib-python
+tqdm
+requests
+basicsr 
+facexlib 
+gfpgan
